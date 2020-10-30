@@ -5,11 +5,14 @@ import {
     Arg, 
     Field, 
     InputType,
+    UseMiddleware,
     Int} from 'type-graphql';
 
 import{Recipe} from '../entity/Recipe';
 import{Category} from '../entity/Category';
 import { User } from '../entity/User'
+import { isAuth } from "../isAuth";
+import { MyContext } from "../MyContext";
 
 @InputType()
 class RecipeInput{
@@ -44,6 +47,7 @@ class RecipeUpdateInput {
 export class RecipeResolver{
 
     @Mutation(() => Recipe)
+    @UseMiddleware(isAuth)
     async createRecipe(
         
         @Arg("variables", () => RecipeInput) variables: RecipeInput

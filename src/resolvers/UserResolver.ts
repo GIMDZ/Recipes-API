@@ -7,24 +7,23 @@ import {
     Field,
     UseMiddleware,
     Ctx,
-    Int
   } from "type-graphql";
 
   import { hash, compare } from "bcryptjs";
   import { User } from "../entity/User";
   import { isAuth } from "../isAuth";
   import { MyContext } from "../MyContext";
-  import { createRefreshToken, createAccessToken } from "../auth";
-  import { sendRefreshToken } from "../sendRefreshToken";
-  import { getConnection } from "typeorm";
+  import { createAccessToken } from "../auth";
+  
+ 
   
   
   @ObjectType()
   class LoginResponse {
     @Field()
-    accessToken: string;
+    accessToken!: string;
     @Field(() => User)
-    user: User;
+    user!: User;
   }
 
   @Resolver()
@@ -36,22 +35,6 @@ import {
       return `Your user id : ${payload!.userId}`;
     }
 
-    @Mutation(() => Boolean)
-  async logout(@Ctx() { res }: MyContext) {
-    sendRefreshToken(res, "");
-
-    return true;
-  }
-
-  @Mutation(() => Boolean)
-  async revokeRefreshTokensForUser(@Arg("userId", () => Int) userId: number) {
-    await getConnection()
-      .getRepository(User)
-      .increment({ id: userId }, "tokenVersion", 1);
-
-    return true;
-  }
-  
     @Mutation(() => Boolean)
     async SignUp(
       @Arg("name") name: string,
@@ -93,8 +76,7 @@ import {
       }
 
   // login successful
-  sendRefreshToken(res, createRefreshToken(user));
-
+  
   return {
     accessToken: createAccessToken(user),
     user
