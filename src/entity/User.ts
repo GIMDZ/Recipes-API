@@ -38,7 +38,6 @@ export class User extends BaseEntity {
     // @CreateDateColumn({ type: 'timestamp' })
     // createdAt!: string;
     
-    @Column("int", { default: 0 })
-    tokenVersion: number;
+    
 
 }

@@ -9,7 +9,7 @@ import {
     Ctx,
     Int
   } from "type-graphql";
-  import { sign } from "jsonwebtoken";
+
   import { hash, compare } from "bcryptjs";
   import { User } from "../entity/User";
   import { isAuth } from "../isAuth";
@@ -17,7 +17,7 @@ import {
   import { createRefreshToken, createAccessToken } from "../auth";
   import { sendRefreshToken } from "../sendRefreshToken";
   import { getConnection } from "typeorm";
-  import { verify } from "jsonwebtoken";
+  
   
   @ObjectType()
   class LoginResponse {
