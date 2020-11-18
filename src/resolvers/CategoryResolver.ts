@@ -20,6 +20,15 @@ class CategoryInput{
     name!: string;
 }
 
+@InputType()
+class UpdateCategoryInput{
+	@Field(() => Int)
+	id!: number
+	
+	@Field(() => String, {nullable: true})
+	name!: string
+}
+
 @Resolver()
 export class CategoryResolver{
 
@@ -35,26 +44,27 @@ export class CategoryResolver{
 
     @Mutation(()=> Boolean)
     @UseMiddleware(isAuth)
-    async deleteCategory(@Arg("id", ()=> Int) id: number)
-    {
-        await Category.delete(id);
-        return true;
-    }
-
-    @Mutation(()=> Boolean)
-    @UseMiddleware(isAuth)
     async updateCategory(
         @Arg("id", ()=> Int) id: number,
-        @Arg("fields", ()=> CategoryInput) fields: CategoryInput)
+        @Arg("fields", ()=> CategoryInput) fields: UpdateCategoryInput)
         {
             await Category.update({id}, fields);
             return true;
     }
 
+    @Mutation(()=> Boolean)
+    @UseMiddleware(isAuth)
+    async deleteCategory(@Arg("id", ()=> Int) id: number)
+    {
+        await Category.delete(id);
+        return true;
+    }
+   
+
     @Query(() => [Category])
     @UseMiddleware(isAuth)
     getCategories() {
-        return Category.find();
+        return Category.find({relations: ["recipe"] });
     }
 
     @Query(() => Category)

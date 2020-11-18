@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import {connect} from './config/typeorm'
 import {startServer} from './app'
+require("dotenv").config();
 
 async function main() {
     connect();
