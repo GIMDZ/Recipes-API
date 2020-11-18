@@ -64,17 +64,25 @@ export class RecipeResolver{
                         category = await newCategory.save();
     
                     }
-    
+
+                    const user = await User.findOne(payload!.userId);
+                    if (!user) {
+                    return null;
+                    }
+
+                if(user && category) {
                     const newRecipe = Recipe.create({
                         name: variables.name,
                         description: variables.description,
                         ingredients: variables.ingredients,
-                        category: Category
+                        user,
+                        category
                     });
                     return await newRecipe.save();
+                }
+
                 } catch (err) {
                     console.log(err);
-                    
                 }
             
                 
