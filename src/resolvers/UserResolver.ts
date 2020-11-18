@@ -13,10 +13,7 @@ import {
   import { User } from "../entity/User";
   import { isAuth } from "../isAuth";
   import { MyContext } from "../MyContext";
-  import { createAccessToken } from "../auth";
-  
- 
-  
+  import { createAccessToken } from "../auth";  
   
   @ObjectType()
   class LoginResponse {
@@ -36,7 +33,7 @@ import {
     }
 
     @Mutation(() => Boolean)
-    async SignUp(
+    async signUp(
       @Arg("name") name: string,
       @Arg("email") email: string,
       @Arg("password") password: string
@@ -61,7 +58,7 @@ import {
     async login(
       @Arg("email") email: string,
       @Arg("password") password: string,
-      @Ctx() { res }: MyContext
+      @Ctx() { payload }: MyContext
     ): Promise<LoginResponse> {
       const user = await User.findOne({ where: { email } });
       if (!user) {
