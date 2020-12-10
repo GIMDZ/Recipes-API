@@ -87,7 +87,7 @@ export class RecipeResolver{
             
                 
         /*const newRecipe = this.getRepository.create(variables);
-        return await newRecipe.save();*/
+         return await newRecipe.save();*/ //This didn't work as expected
     }
 
     @Mutation(()=> Boolean)
@@ -96,7 +96,7 @@ export class RecipeResolver{
     async deleteRecipe(@Arg("id", ()=> Int) id: number)
     {
         await Recipe.delete(id);
-        return true;
+        return 'Recipe Deleted';
     }
 
     @Mutation(()=> Boolean)
@@ -105,36 +105,51 @@ export class RecipeResolver{
         @Arg("id", ()=> Int) id: number,
         @Arg("fields", ()=> RecipeUpdateInput) fields: RecipeUpdateInput)
         {
-            await Recipe.update({id}, ({
+            try {await Recipe.update({id}, ({
                 name: fields.name,
                 description: fields.description,
                 ingredients: fields.ingredients,
-                category: Category
+                
             }));
-            return true;
+            return true;}
+            catch (err) {
+                console.log(err);
+                return false;
+            }
     }
 
     @Query(() => [Recipe])
     @UseMiddleware(isAuth)
     async getRecipes() {
         const recipeRepository = getRepository(Recipe)
-        const recipe = await recipeRepository.find({
+        try{
+            const recipe = await recipeRepository.find({
             relations: ['user', 'category']
         })
-  
         return recipe;
+       }catch (err) {
+        console.log(err);
+        return null;
+      }
     }
 
     @Query(() => Recipe)
     @UseMiddleware(isAuth)
     async getOneRecipe( 
         @Arg("id", ()=> Int) id: number){
-         return await Recipe.findOne({ id }, { relations: ['category'] });
+         try{
+             return await Recipe.findOne({ id }, { relations: ['user','category'] });
         }
+        catch (err) {
+            console.log(err);
+            return null;
+          }
+    }
 
-        @Query(() => [Recipe], { nullable: true })
-        @UseMiddleware(isAuth)
-        async getMyRecipes(@Ctx() { payload }: MyContext) {
+    
+    @Query(() => [Recipe], { nullable: true })
+    @UseMiddleware(isAuth)
+    async getMyRecipes(@Ctx() { payload }: MyContext) {
           const user = await User.findOne(payload!.userId);
       
           if (!user) {
@@ -143,7 +158,7 @@ export class RecipeResolver{
       
           const recipes = await Recipe.find({
             where: { user },
-            relations: ['category'],
+            relations: ['user','category'],
           });
       
           return recipes;
