@@ -46,7 +46,8 @@ Examples of usage:
 
 2. You can try some queries and mutation, below you have a list of queries to try:
 
-`mutation register {
+```
+mutation register {
   signUp(
       name: "gimdz2",
       email: "gimdz2@gmail.com",
@@ -150,7 +151,8 @@ query getMyRecipes{
 }
 mutation deleteRec {
   deleteRecipe(id: 4)
-}`
+}
+```
 
 ## Status
 Project is: _in progress_.
