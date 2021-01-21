@@ -95,8 +95,12 @@ export class RecipeResolver{
 
     async deleteRecipe(@Arg("id", ()=> Int) id: number)
     {
-        await Recipe.delete(id);
-        return 'Recipe Deleted';
+        try {await Recipe.delete(id);
+        return 'Recipe Deleted';}
+        catch (err) {
+            console.log(err);
+            return null;
+          }
     }
 
     @Mutation(()=> Boolean)
@@ -153,7 +157,7 @@ export class RecipeResolver{
           const user = await User.findOne(payload!.userId);
       
           if (!user) {
-            return null;
+            throw new Error("Could not find user");
           }
       
           const recipes = await Recipe.find({
