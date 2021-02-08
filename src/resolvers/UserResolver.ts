@@ -38,6 +38,19 @@ import {
       @Arg("email") email: string,
       @Arg("password") password: string
     ) {
+      
+      const emailExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      
+      const isValidEmail =  emailExpression.test(String(email).toLowerCase())
+      if(!isValidEmail)
+      throw new Error("The email is not in proper format")
+
+      if(name.length < 1)
+      throw new Error("Name should have at least one character")
+
+      if(password.length < 8 )
+      throw new Error("Password should be minimum 8 characters")
+
       const hashedPassword = await hash(password, 13);
       
       try {
